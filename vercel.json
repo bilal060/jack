@@ -11,39 +11,6 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/vercel_server.js"
-    },
-    {
-      "src": "/videos/(.*)",
-      "dest": "/videos/$1"
-    },
-    {
-      "src": "/data/(.*)",
-      "dest": "/data/$1"
-    },
-    {
-      "src": "/logs/(.*)",
-      "dest": "/logs/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "PORT": "3000"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "regions": ["iad1"],
-  "public": true,
   "headers": [
     {
       "source": "/(.*)",
@@ -58,5 +25,16 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "regions": ["iad1"],
+  "public": true
 } 
