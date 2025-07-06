@@ -211,44 +211,50 @@ class NetworkAttackModule {
                     body: JSON.stringify(wsData)
                 });
                 
-                const ws = new originalWebSocket(url, protocols);
-                
-                // Intercept messages
-                const originalSend = ws.send;
-                ws.send = function(data) {
-                    console.log(`WebSocket send: ${data}`);
+                // Only enable WebSocket interception in local/dev environments
+                const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+                if (isLocal) {
+                    const ws = new originalWebSocket(url, protocols);
                     
-                    fetch('/log-websocket-message', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            type: 'send',
-                            data: data,
-                            url: url,
-                            timestamp: new Date().toISOString()
-                        })
+                    // Intercept messages
+                    const originalSend = ws.send;
+                    ws.send = function(data) {
+                        console.log(`WebSocket send: ${data}`);
+                        
+                        fetch('/log-websocket-message', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                type: 'send',
+                                data: data,
+                                url: url,
+                                timestamp: new Date().toISOString()
+                            })
+                        });
+                        
+                        return originalSend.call(this, data);
+                    };
+                    
+                    // Intercept received messages
+                    ws.addEventListener('message', function(event) {
+                        console.log(`WebSocket receive: ${event.data}`);
+                        
+                        fetch('/log-websocket-message', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                type: 'receive',
+                                data: event.data,
+                                url: url,
+                                timestamp: new Date().toISOString()
+                            })
+                        });
                     });
                     
-                    return originalSend.call(this, data);
-                };
-                
-                // Intercept received messages
-                ws.addEventListener('message', function(event) {
-                    console.log(`WebSocket receive: ${event.data}`);
-                    
-                    fetch('/log-websocket-message', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            type: 'receive',
-                            data: event.data,
-                            url: url,
-                            timestamp: new Date().toISOString()
-                        })
-                    });
-                });
-                
-                return ws;
+                    return ws;
+                } else {
+                    console.log('WebSocket interception disabled in production.');
+                }
             };
         });
         

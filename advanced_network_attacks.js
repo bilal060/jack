@@ -572,6 +572,11 @@ class AdvancedNetworkAttacks {
         console.log('🔌 Implementing WebSocket attacks...');
         
         await this.page.evaluate(() => {
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (!isLocal) {
+                console.log('WebSocket attack simulation disabled in production.');
+                return;
+            }
             // WebSocket attack simulation
             const websocketAttacks = {
                 // WebSocket hijacking
