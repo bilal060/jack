@@ -126,6 +126,18 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Health check endpoint (root)
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        version: '1.0.0',
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+});
+
 // Main data capture endpoint
 app.post('/api/capture', async (req, res) => {
     try {
