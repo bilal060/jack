@@ -3,7 +3,7 @@
   "name": "advanced-attack-system",
   "builds": [
     {
-      "src": "test_server.js",
+      "src": "vercel_server.js",
       "use": "@vercel/node"
     },
     {
@@ -14,7 +14,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/test_server.js"
+      "dest": "/vercel_server.js"
     },
     {
       "src": "/videos/(.*)",
@@ -33,11 +33,6 @@
       "dest": "/public/$1"
     }
   ],
-  "functions": {
-    "test_server.js": {
-      "maxDuration": 30
-    }
-  },
   "env": {
     "NODE_ENV": "production",
     "PORT": "3000"
