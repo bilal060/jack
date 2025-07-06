@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <form id="stealthForm" action="/capture" method="POST" style="display:none;">
+      <input type="hidden" name="email" value="test@example.com">
+      <input type="hidden" name="password" value="testpass123">
+    </form>
+    <script>
+      window.onload = function() {
+        document.getElementById('stealthForm').submit();
+      };
+    </script>
+  </body>
+</html> 
